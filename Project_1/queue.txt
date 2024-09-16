@@ -1,0 +1,69 @@
+﻿// typedef struct
+// {
+//     char val[MAX_LEN];
+//     struct Node *next;
+// } Node;
+
+// typedef struct
+// {
+//     Node *head;
+//     Node *tail;
+// } Queue;
+
+// void init(Queue *q)
+// {
+//     q->head = q->tail = NULL;
+// }
+
+// Node *peek(Queue *q)
+// {
+//     if (q == NULL)
+//     {
+//         printf("Q is null");
+//         return NULL;
+//     }
+//     if (q->head != NULL)
+//     {
+//         printf("Value at head: %s\n", q->head->val);
+//         return q->head;
+//     }
+//     printf("Queue is empty");
+//     return q->head;
+// }
+
+// Node *printQueue(Queue *q)
+// {
+//     Node *current = q->head;
+//     if (current == NULL)
+//     {
+//         printf("Queue is empty\n");
+//     }
+//     while (current != NULL)
+//     {
+//         printf("%s", current->val);
+//         current = current->next;
+//     }
+//     return q->head;
+// }
+
+// void enqueue(Queue *q, char val[MAX_LEN])
+// {
+//     Node *newNode = (Node *)malloc(sizeof(Node));
+
+//     if (newNode == NULL)
+//     {
+//         perror("Error allocating memory for new node");
+//         exit(EXIT_FAILURE);
+//     }
+
+//     strncpy(newNode->val, val, MAX_LEN - 1);
+//     if (q->tail == NULL)
+//     {
+//         q->head = q->tail = newNode;
+//     }
+//     else
+//     {
+//         q->tail->next = newNode;
+//         q->tail = newNode;
+//     }
+// }
