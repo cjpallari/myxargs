@@ -77,7 +77,6 @@ int main(int argc, char *argv[])
 {
     // Variable declarations
     int option, i;
-    char fullCommand[MAX_LEN] = "";
     char placeholder[MAX_LEN] = "";
     char command[MAX_LEN];
     char *args[MAX_LEN];
@@ -85,6 +84,8 @@ int main(int argc, char *argv[])
     int numArgs;
     int n, t, r, rep, perLine = 0;
 
+    // Used getopt to conveniently parse command line arguments
+    //: after flag means that flag requires an argument
     while ((option = getopt(argc, argv, "n:I:tr")) != -1) // Getting the options passed in
     {
         switch (option)
@@ -109,21 +110,24 @@ int main(int argc, char *argv[])
         }
     }
 
+    // Corrected usage statement from ./myxargs to myxargs
     if (optind == argc) // if no command is passed after flags
     {
-        fprintf(stderr, "Usage: %s [-n num] [-I replace] [-t] [-r] command\n", argv[0]); // usage statement
+        fprintf(stderr, "Usage: myxargs [-n num] [-I replace] [-t] [-r] command\n"); // usage statement
         exit(EXIT_FAILURE);
     }
 
+    // Main loop to read input from stdin
     while (fgets(command, sizeof(command), stdin))
     {
+        // Remove newline character from input
         command[strcspn(command, "\n")] = 0;
-        strcpy(stringArgs, command);
-        sanitize_input(stringArgs);
+        strcpy(stringArgs, command); // copy command to stringArgs
+        sanitize_input(stringArgs);  // sanitize input
 
         i = 0; // index variale for tokenizing args
 
-        int j = 0;
+        // Null terminate command
         command[sizeof(command) - 1] = '\0';
 
         char *element = strtok(command, " "); // variable to store command elements, split on spaces
@@ -138,6 +142,7 @@ int main(int argc, char *argv[])
         if (r && command[0] == '\0') // if r is active
         {
             // No command execution if input is empty
+            // Gracefully exit
             exit(EXIT_SUCCESS);
         }
 
@@ -146,13 +151,16 @@ int main(int argc, char *argv[])
             int end;
             if (perLine <= 0 || perLine > MAX_LINES) // checking to make sure the argument passed to -n works
             {
+                // Error message
                 fprintf(stderr, "Invalid -n value\n");
+                // Exit with failure
                 exit(EXIT_FAILURE);
             }
 
             // Split args into chunks of perLine size
             for (int i = 0; i < numArgs; i += perLine)
             {
+                // Initialize chunks array
                 char *chunks[perLine + 1];
                 if (i + perLine < numArgs) // determines end of index
                 {
@@ -185,12 +193,14 @@ int main(int argc, char *argv[])
             char *pos;
             char fullRight[MAX_LEN] = ""; // initialize buffer for arguments
 
-            // concatenate arguments into fullRight
+            // Iterate over arguments
             for (int i = optind; i < argc; i++)
             {
+                // Concatenate arguments into fullRight
                 strcat(fullRight, argv[i]);
                 if (i < argc - 1)
                 {
+                    // Add spaces between arguments
                     strcat(fullRight, " ");
                 }
             }
@@ -201,7 +211,9 @@ int main(int argc, char *argv[])
                 int beforeLen = pos - fullRight;          // calculate length of string in fullRight before the placeholder
                 int placeholderLen = strlen(placeholder); // length of placeholder var
 
+                // create new command with placeholder replaced
                 char newCommand[MAX_LEN];
+                // copy beforeLen characters from fullRight to newCommand
                 strncpy(newCommand, fullRight, beforeLen);
                 newCommand[beforeLen] = '\0';
                 strcat(newCommand, stringArgs); // replace placeholder with command input
@@ -234,17 +246,20 @@ int main(int argc, char *argv[])
                         strcat(fullRight, " "); // add spaces
                     }
                 }
+                // if no arguments are passed
                 if (args[0] == NULL)
                 {
+                    // Sanitize input
                     sanitize_input(fullRight);
-                    printf("+ %s\n", fullRight);
+                    printf("+ %s\n", fullRight); // print command
                     break;
                 }
                 else
                 {
+                    // Sanitize input
                     sanitize_input(fullRight);
-                    printf("+ %s %s \n", fullRight, stringArgs);
-                    execute_command(fullRight);
+                    printf("+ %s %s \n", fullRight, stringArgs); // print command
+                    execute_command(fullRight);                  // execute command
                 }
             }
         }
